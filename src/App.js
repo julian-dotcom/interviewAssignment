@@ -1,25 +1,31 @@
 import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import './App.css';
+import WeatherIcons from './components/WeatherIcons';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const API_KEY = process.env.REACT_APP_API_KEY;
+
+const App = () => {
+    const [daily, setDaily] = useState([]);
+    useEffect(() => {
+        const fetchWeather = async () => {
+        try {
+            const url = 'https://api.openweathermap.org/data/2.5/onecall?lat=40.71&lon=-74.00&exclude=current,minutely,hourly,alerts&units=metric&appid=' + API_KEY;
+            const response = await axios(url);
+            setDaily(response.data.daily);
+            } catch (err) {
+              console.log("error", err);
+        }
+    }
+    fetchWeather();
+    }, [])
+
+    return (
+      <div className="App">
+        <WeatherIcons daily={daily} />
+      </div>
+    );
 }
 
 export default App;
